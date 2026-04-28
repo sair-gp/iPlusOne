@@ -1,0 +1,34 @@
+iPlusOne
+
+iPlusOne is a tool for automated i+1 sentence extraction and flashcard generation. It processes frequency lists, user-defined topics, or raw text inputs to produce optimized learning material, removing the need for manual sentence mining workflows.
+Key Features
+
+    Frequency List Integration: Automatically targets the most relevant vocabulary based on common usage.
+
+    Thematic Generation: Focuses learning on specific topics or domains.
+
+    Raw Text Analysis: Processes books, lyrics, or articles to find personalized i+1 targets.
+
+    AI-Powered Context: Leverages Gemini 3 Flash to generate natural sentences that stick to a restricted, known vocabulary.
+
+    Anki-Ready Output: Formats data for direct import into flashcard software.
+
+How It Works
+
+    Input: Provide a list of unknown words or a source text.
+
+    Filter: The tool compares the input against your "Known Words" list to identify legitimate +1 targets.
+
+    Forge: The system generates concise definitions and i+1 example sentences.
+
+    Export: Results are batched into a format ready for flashcard creation.
+
+Tech Stack
+
+    Language: Python
+
+    LLM: Gemini 3 Flash
+
+    Data Handling: JSON-based local storage for vocabulary tracking.
+
+    This project is designed to bridge the gap between passive consumption and active acquisition by automating the most tedious part of the process: finding the right sentence for the right word.
