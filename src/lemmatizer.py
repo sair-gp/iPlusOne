@@ -1,18 +1,9 @@
-import os
-from dotenv import load_dotenv
-from google import genai
 import wordComp
 import json
 import utils.ankiUtils as ankiUtils
+import utils.genaiClient as gc
 
-load_dotenv()
-
-api_key = os.getenv("API_KEY")
-
-if not api_key:
-    raise ValueError("API_KEY not found in environment")
-
-client = genai.Client(api_key=api_key)
+client = gc.initClient()
 
 # Let the user pick the target
 target_name, target_path = ankiUtils.loadDecks()
@@ -29,10 +20,7 @@ newWords = ankiUtils.compDecktoWordList(deckLemmas, wordList)
 prompt = f"Generate text in JSON format that show the lemmas of the given words. The format is lemma:[array of words belonging to that lemma].No introductury text or conclussion. Only provided what was requested. Here are the words: {newWords}"
 
 print(f"New words: {newWords}")
-response = client.models.generate_content(
-    model="gemini-3-flash-preview",
-    contents=prompt,
-)
+response = gc.sendPrompt(client, prompt, "gemini-3-flash-preview")
 print(f"AI response: {response.text}")
 
 
@@ -51,6 +39,4 @@ try:
 except FileExistsError:
     print("That file already exists!")
 
-
-# CLose the client to release the resources
-client.close()
+gc.closeClient(client)

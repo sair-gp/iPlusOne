@@ -43,3 +43,7 @@ pytest_cache/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Mp3 files
+*.mp3
+.mp3
