@@ -1,23 +1,35 @@
 import ankiConnect
 import json
 import sys
+import os
 
 
-def openWordList(
-    filePath,
-):
+def openWordList(filePath):
+    # 1. Ensure the directory path exists before trying to create a file
+    os.makedirs(os.path.dirname(filePath), exist_ok=True)
+
     try:
-        with open(filePath, "r") as f:
-            data = json.load(f)
-            return data
-    except FileNotFoundError:
-        print("File not found")
-    except json.JSONDecodeError:
-        print("Invalid JSON format")
+        # 2. Try to read the file
+        with open(filePath, "r", encoding="utf-8") as f:
+            return json.load(f)
+
+    except (FileNotFoundError, json.JSONDecodeError):
+        # 3. If file is missing OR the JSON is corrupted/empty
+        print(f"Target database not found. Creating: {filePath}")
+
+        default_data = {}  # Initialize as an empty dictionary
+
+        with open(filePath, "w", encoding="utf-8") as f:
+            json.dump(default_data, f, indent=4, ensure_ascii=False)
+
+        return default_data
+
     except PermissionError:
-        print("You don't have permissions to read this file")
+        print("ERROR: Permission denied.")
+        return {}
     except Exception as e:
-        print(f"Unexpected error: {e}")
+        print(f"UNEXPECTED ERROR: {e}")
+        return {}
 
 
 def saveJsonCache(file_path, data):
@@ -86,16 +98,16 @@ def get_diff():
             continue
 
         word = word.lower()
-        status = "Mastered" if interval >= 21 else "In-Training"
+        # status = "Mastered" if interval >= 21 else "In-Training"
 
         deckWords[word] = interval
-        print(f"[+] Word: {word} | Interval: {interval} days | Status: {status}")
+        print(f"[+] Word: {word}")  # | Interval: {interval} days | Status: {status}")
 
     if not deckWords:
         print("Deck has no valid words!")
         return []
 
-    print("Deck has contents. Saving to the JSON cache now.")
+    # print("Deck has contents. Saving to the JSON cache now.")
     # saveJsonCache("data/deckCache.json", deckWords)
 
     # 5. Load word list
@@ -104,13 +116,13 @@ def get_diff():
         print("Failed to load file")
         return []
 
-    print("Loaded successfully (even if empty)")
+    # print("Loaded successfully (even if empty)")
     print("Starting comparison phase.")
 
     # 6. Compare
     diff = compareWords(wordList, deckWords)
 
-    print("Final intersection size:", len(diff))
+    print("Final diff size:", len(diff))
     print(diff)
 
     return diff
