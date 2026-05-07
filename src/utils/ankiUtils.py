@@ -1,7 +1,10 @@
-import ankiConnect
+
 import os
 import json
-import wordComp
+
+from src.utils import ankiConnect
+from src import wordComp
+
 
 
 def sync_anki_to_json(deckName, file_path, client):
@@ -41,31 +44,37 @@ def sync_anki_to_json(deckName, file_path, client):
 
 
 def loadDecks():
-    # 1. Fetch all deck names from the Anki API
-    all_decks = ankiConnect.invoke("deckNames")
 
-    # 2. Display the tactical menu
-    print("\n--- AVAILABLE ANKI DECKS ---")
-    for i, name in enumerate(all_decks):
-        print(f"[{i}] {name}")
+    target_deck = None
+    deckPath = None
+    try:
+        # 1. Fetch all deck names from the Anki API
+        all_decks = ankiConnect.invoke("deckNames")
 
-    # 3. Get the user's choice
-    choice = input("\nSelect a deck (Enter the number or the full name): ")
+        # 2. Display the tactical menu
+        print("\n--- AVAILABLE ANKI DECKS ---")
+        for i, name in enumerate(all_decks):
+            print(f"[{i}] {name}")
 
-    # 4. Resolve the choice: Number vs. String
-    if choice.isdigit():
-        # Convert text input to an actual number
-        selection_index = int(choice)
-        target_deck = all_decks[selection_index]
-    else:
-        # Use the text exactly as typed
-        target_deck = choice
+        # 3. Get the user's choice
+        choice = input("\nSelect a deck (Enter the number or the full name): ")
 
-    # 5. Set the path based on the selection
-    deckPath = f"./data/decks/{target_deck}.json"
+        # 4. Resolve the choice: Number vs. String
+        if choice.isdigit():
+            # Convert text input to an actual number
+            selection_index = int(choice)
+            target_deck = all_decks[selection_index]
+        else:
+            # Use the text exactly as typed
+            target_deck = choice
 
-    print(f"\nTarget Deck: {target_deck}")
-    print(f"PATH: {deckPath}")
+        # 5. Set the path based on the selection
+        deckPath = f"./data/decks/{target_deck}.json"
+
+        print(f"\nTarget Deck: {target_deck}")
+        print(f"PATH: {deckPath}")
+    except Exception as e:
+        print(f"[X] Critical error: {e}")
     return target_deck, deckPath
 
 
